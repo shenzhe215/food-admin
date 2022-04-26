@@ -7,6 +7,24 @@ export function getAllFood() {
   });
 }
 
+// 分页查询
+export function getFoodPage(current, limit){
+  return request({
+    url: `/foodservice/food/pageFood/${current}/${limit}`,
+    method: "get",
+  });
+}
+
+// 分页待条件查询
+export function getFoodPageCondition(current, limit, foodQuery){
+  return request({
+    url: `/foodservice/food/pageFoodCondition/${current}/${limit}`,
+    method: "post",
+    data: foodQuery
+  });
+}
+
+
 export function getFoodType() {
   return request({
     url: "/foodservice/type/getAllType",

@@ -12,21 +12,30 @@ import {
   message,
 } from "antd";
 import {} from "@ant-design/icons";
+import {} from "../store/actionCreators";
 import { addFoodInfo, updateFoodInfo } from "@/service/food";
-import {
-  changeFoodInfoAction,
-  changeFoodCoverAction,
-} from "../store/actionCreators";
-import { FDFoodInfoWraper } from "./style";
+
+// 上传之前调用的方法
+function beforeAvatarUpload(file) {
+  const isJPG = file.type === "image/jpeg";
+
+  const isLt2M = file.size / 1024 / 1024 < 2;
+  if (!isJPG) {
+    this.$message.error("上传头像图片只能是 JPG 格式!");
+  }
+  if (!isLt2M) {
+    this.$message.error("上传头像图片大小不能超过 2MB!");
+  }
+  return isJPG && isLt2M;
+}
 
 const FDFood = memo((props) => {
   // redux hooks
   // 组件与redux关联：获取数据(useSelector)和进行操作
-  const { foodInfo, typeList, cover } = useSelector(
+  const { foodInfo, typeList } = useSelector(
     (state) => ({
       typeList: state.getIn(["food", "typeList"]),
       foodInfo: state.getIn(["food", "foodInfo"]),
-      cover: state.getIn(["food", "cover"]),
     }),
     shallowEqual
   );
@@ -38,6 +47,7 @@ const FDFood = memo((props) => {
   const [form] = Form.useForm();
   const [foodId, setFoodId] = useState(null);
   const [isUpdate, setIsUpdate] = useState(false);
+  const [foodInfoVo, setFoodInfoVo] = useState({});
   const [fileList, setFileList] = useState([]);
 
   // 表单验证
@@ -51,19 +61,6 @@ const FDFood = memo((props) => {
       setIsUpdate(true);
       setFoodId(params.id);
 
-      if (foodInfo.cover === "") {
-        setFileList([]);
-      } else {
-        // 设置图片信息
-        let newFileList = [
-          {
-            uid: "-1",
-            url: foodInfo.cover,
-          },
-        ];
-        setFileList(newFileList);
-      }
-
       const { title, typeId, price, cover, isChara, status, description } =
         foodInfo;
       form.setFieldsValue({
@@ -71,21 +68,29 @@ const FDFood = memo((props) => {
         typeId: typeId,
         price: price,
         cover: cover,
+        isChara: isChara,
         status: status,
         description: description,
       });
     } else {
-      dispatch(changeFoodInfoAction({}));
-      dispatch(changeFoodCoverAction(""));
       setIsUpdate(false);
-      setFileList([]);
+      setFileList({});
     }
-  }, [foodInfo, cover]);
+  }, []);
+
+  useEffect(() => {
+    setFoodInfoVo(foodInfo);
+    let newFileList = [
+      {
+        uid: "-1",
+        url: foodInfo.cover,
+      },
+    ];
+    setFileList(newFileList);
+  }, [foodInfo]);
 
   // other hooks
   const onFinish = (values) => {
-    values.cover = cover;
-    values.status = "Normal";
     if (!isUpdate) {
       addFoodInfo(values).then((res) => {
         if (res.code === 20000) {
@@ -95,7 +100,7 @@ const FDFood = memo((props) => {
           });
         } else {
           // 提示信息
-          message.error({
+          message.success({
             content: res.message,
           });
         }
@@ -110,7 +115,7 @@ const FDFood = memo((props) => {
           });
         } else {
           // 提示信息
-          message.error({
+          message.success({
             content: res.message,
           });
         }
@@ -120,56 +125,61 @@ const FDFood = memo((props) => {
     // 路由跳转
     navigate(`/foodservice/list`);
   };
+  // const handleSubmit = useCallback(() => {
+  //   if (!isUpdate) {
+  //     addFoodInfo(foodInfoVo).then((response) => {
+  //       // 提示信息
+  //       message.success({
+  //         content: `添加菜品信息成功`,
+  //       });
+  //       // 路由跳转
+  //       navigate(`/foodservice/list`);
+  //     });
+  //   } else {
+  //     updateFoodInfo(foodInfoVo).then((response) => {
+  //       // 提示信息
+  //       message.success({
+  //         content: `更新菜品信息成功`,
+  //       });
+  //       // 路由跳转
+  //       navigate(`/foodservice/list`);
+  //     });
+  //   }
+  // }, [foodInfoVo, isUpdate]);
 
   // 上传封面
+  const handleAvatarSuccess = useCallback(
+    (info) => {
+      const { file, fileList } = info;
+      const status = file.status;
+      setFileList(fileList.slice());
+      if (status !== "uploading") {
+        // console.log(info.file, info.fileList);
+      }
+      if (status === "done") {
+        setFoodInfoVo({
+          ...foodInfoVo,
+          cover: file.response.data.url,
+        });
+        message.success({
+          content: `${info.file.name} 图片上传成功`,
+        });
+      } else if (status === "error") {
+        message.error({
+          content: `${info.file.name} 图片上传失败`,
+        });
+      }
+      setFileList(fileList);
+    },
+    [fileList]
+  );
 
-  const handleAvatarSuccess = (info) => {
-    const { file, fileList } = info;
-    const status = file.status;
-    setFileList(fileList.slice());
-    if (status !== "uploading") {
-      // console.log(info.file, info.fileList);
-    }
-    if (status === "done") {
-      dispatch(changeFoodCoverAction(file.response.data.url));
-      message.success({
-        content: `${info.file.name} 图片上传成功`,
-      });
-    } else if (status === "error") {
-      message.error({
-        content: `${info.file.name} 图片上传失败`,
-      });
-    }
-    setFileList(fileList);
-  };
-
-
-  // 上传之前调用的方法
-  const beforeAvatarUpload = (file) => {
-    const isJPG = file.type === "image/jpeg";
-
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isJPG) {
-      setFileList([]);
-      message.error({
-        content: `上传头像图片只能是 JPG 格式!`,
-      });
-    }
-    if (!isLt2M) {
-      setFileList([]);
-      message.error({
-        content: `上传头像图片大小不能超过 2MB!`,
-      });
-    }
-    return isJPG && isLt2M;
-  };
-
-  const handleCoverRemove = (file) => {
-    setFileList([]);
-  };
+  const handleCoverRemove = useCallback((file) => {
+    setFileList({});
+  });
 
   return (
-    <FDFoodInfoWraper>
+    <div>
       <Form
         labelCol={{
           span: 4,
@@ -182,10 +192,28 @@ const FDFood = memo((props) => {
         onFinish={onFinish}
       >
         <Form.Item label="名称" name={"title"}>
-          <Input width="200px" />
+          <Input
+            // value={foodInfoVo.title}
+            // onChange={(e) => {
+            //   setFoodInfoVo({
+            //     ...foodInfoVo,
+            //     title: e.target.value,
+            //   });
+            // }}
+            width="200px"
+          />
         </Form.Item>
         <Form.Item label="分类" name="typeId">
-          <Select style={{ width: 120 }}>
+          <Select
+            style={{ width: 120 }}
+            // value={foodInfoVo.typeId}
+            // onChange={(value) => {
+            //   setFoodInfoVo({
+            //     ...foodInfoVo,
+            //     typeId: value,
+            //   });
+            // }}
+          >
             {typeList.map((type, index) => (
               <Select.Option key={index} value={type.id}>
                 {type.title}
@@ -194,7 +222,18 @@ const FDFood = memo((props) => {
           </Select>
         </Form.Item>
         <Form.Item label="价格" name={"price"}>
-          <InputNumber min="0" max="9999" step="1" />
+          <InputNumber
+            min="0"
+            max="999"
+            step="1"
+            // value={foodInfoVo.price}
+            // onChange={(value) => {
+            //   setFoodInfoVo({
+            //     ...foodInfoVo,
+            //     price: value,
+            //   });
+            // }}
+          />
         </Form.Item>
         <Form.Item label="上传图片" name={"cover"}>
           <Upload
@@ -208,15 +247,31 @@ const FDFood = memo((props) => {
             {fileList.length < 5 && "+ Upload"}
           </Upload>
         </Form.Item>
-        {/* <Form.Item label="是否为特色" name={"isChara"}>
-          <Radio.Group>
+        <Form.Item label="是否为特色" name={"isChara"}>
+          <Radio.Group
+          // value={foodInfoVo.isChara}
+          // onChange={(e) => {
+          //   setFoodInfoVo({
+          //     ...foodInfoVo,
+          //     isChara: e.target.value,
+          //   });
+          // }}
+          >
             <Radio value={1}>是</Radio>
             <Radio value={0}>否</Radio>
           </Radio.Group>
-        </Form.Item> */}
+        </Form.Item>
 
         <Form.Item label="描述" name={"description"}>
-          <Input.TextArea />
+          <Input.TextArea
+          // value={foodInfoVo.description}
+          // onChange={(e) => {
+          //   setFoodInfoVo({
+          //     ...foodInfoVo,
+          //     description: e.target.value,
+          //   });
+          // }}
+          />
         </Form.Item>
 
         <Form.Item label="确认">
@@ -229,7 +284,7 @@ const FDFood = memo((props) => {
           </Button>
         </Form.Item>
       </Form>
-    </FDFoodInfoWraper>
+    </div>
   );
 });
 

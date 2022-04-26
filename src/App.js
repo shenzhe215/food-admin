@@ -1,20 +1,30 @@
-import React, { memo } from "react";
-import {  HashRouter } from "react-router-dom";
+import React, { memo, Suspense } from "react";
+import { HashRouter, Route, Routes } from "react-router-dom";
 import { Provider } from "react-redux";
 
 import store from "./store";
 
-import FDAppFooter from "@/components/app-footer";
-import FDAppHeader from "@/components/app-header";
-import FDAppContent from "./components/app-content";
+const DefaultLayout = React.lazy(() => import("./layout/defaultLayout"));
+const Login = React.lazy(() => import("./pages/login/login"));
 
 const App = memo(() => {
   return (
     <Provider store={store}>
       <HashRouter>
-        <FDAppHeader />
-        <FDAppContent />
-        <FDAppFooter />
+        <Suspense fallback={<div>page loading</div>}>
+          <Routes>
+            <Route exact path="/login" name="Login Page" element={<Login />} />
+            {/* <Route
+              exact
+              path="/register"
+              name="Register Page"
+              element={<Register />}
+            /> */}
+            {/* <Route exact path="/404" name="Page 404" element={<Page404 />} />
+            <Route exact path="/500" name="Page 500" element={<Page500 />} /> */}
+            <Route path="*" name="Home" element={<DefaultLayout />} />
+          </Routes>
+        </Suspense>
       </HashRouter>
     </Provider>
   );

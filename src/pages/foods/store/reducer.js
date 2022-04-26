@@ -5,16 +5,10 @@ import * as actionTypes from "./constants";
 const defaultState = Map({
   foodList: [],
   typeList: [],
-  foodInfo: {
-    title: "",
-    typeId: "",
-    price: 0.0,
-    cover: "",
-    isOut: 1,
-    isChara: 0,
-    status: "",
-    description: "",
-  },
+  currentFood: "",
+  foodInfo: {},
+  cover:"",
+  total: 0,
 });
 
 function reducer(state = defaultState, action) {
@@ -23,10 +17,12 @@ function reducer(state = defaultState, action) {
       return state.set("foodList", action.foodList);
     case actionTypes.GET_TYPE_LIST:
       return state.set("typeList", action.typeList);
-    case actionTypes.UPDATE_FOOD:
-      return state.set("foodInfo", action.foodInfo);
+    case actionTypes.CHANGE_FOOD_COVER:
+      return state.set("cover", action.cover);
     case actionTypes.CHANGE_FOOD_INFO:
       return state.set("foodInfo", action.foodInfo);
+    case actionTypes.GET_TOTAL:
+      return state.set("total", action.total);
     default:
       return state;
   }
