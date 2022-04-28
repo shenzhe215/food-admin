@@ -38,22 +38,31 @@ const FDAppContent = memo(() => {
           defaultSelectedKeys={["1"]}
           defaultOpenKeys={["sub1"]}
           style={{ height: "100%", borderRight: 0 }}
-          onClick={(item, key, keyPath) => {
-            alert(item)
-            console.log(item)
-            navigate({key});
+          onClick={(item) => {
+            const { key } = item;
+            console.log(item);
+            navigate(key);
           }}
         >
-          <SubMenu key="sub1" icon={<UserOutlined />} title="菜品管理">
+          {/* <SubMenu key="sub1" icon={<UserOutlined />} title="菜品管理">
             <Menu.Item key="3">
               <Link to="/foodservice/list">查询菜品</Link>
             </Menu.Item>
             <Menu.Item key="4">
               <Link to="/foodservice/food">新增菜品</Link>
             </Menu.Item>
-          </SubMenu>
-          <MenuItem icon={<UserOutlined />}>
-            <Link to="/coupon">优惠券查询</Link>
+          </SubMenu> */}
+          <MenuItem key="/food" icon={<UserOutlined />}>
+            菜品管理
+          </MenuItem>
+          <MenuItem key="/food/list" icon={<UserOutlined />}>
+            菜品列表
+          </MenuItem>
+          <MenuItem key="/food/new" icon={<UserOutlined />}>
+            新菜品列表
+          </MenuItem>
+          <MenuItem key="/coupon" icon={<UserOutlined />}>
+            优惠券管理
           </MenuItem>
           <SubMenu key="coupon" icon={<UserOutlined />} title="优惠券管理">
             {/* <Menu.Item key="5"> */}
