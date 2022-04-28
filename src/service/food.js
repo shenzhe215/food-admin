@@ -8,22 +8,30 @@ export function getAllFood() {
 }
 
 // 分页查询
-export function getFoodPage(current, limit){
+export function getFoodPage(current, limit) {
   return request({
     url: `/foodservice/food/pageFood/${current}/${limit}`,
     method: "get",
   });
 }
 
-// 分页待条件查询
-export function getFoodPageCondition(current, limit, foodQuery){
+// 带条件查询
+export function getFoodCondition(foodQuery) {
   return request({
-    url: `/foodservice/food/pageFoodCondition/${current}/${limit}`,
+    url: `/foodservice/food/foodCondition`,
     method: "post",
-    data: foodQuery
+    data: foodQuery,
   });
 }
 
+// 分页带条件查询
+export function getFoodPageCondition(current, limit, foodQuery) {
+  return request({
+    url: `/foodservice/food/pageFoodCondition/${current}/${limit}`,
+    method: "post",
+    data: foodQuery,
+  });
+}
 
 export function getFoodType() {
   return request({
@@ -83,7 +91,6 @@ export function deleteFoodId(id) {
 export function getAllType() {
   return request({
     url: `/foodservice/type/getAllType`,
-    method: "get"
+    method: "get",
   });
 }
-

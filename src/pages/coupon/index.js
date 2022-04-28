@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useState } from "react";
-import { useDispatch, useSelector, shallowEqual } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getCouponList, addCoupon, deleteCoupon } from "@/service/coupon";
 import {
@@ -9,14 +9,11 @@ import {
   message,
   Modal,
   Form,
-  Checkbox,
   DatePicker,
-  Col,
   Radio,
-  InputNumber,
   Space,
-  Divider,
 } from "antd";
+import { SearchOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import { FDCouponWraper, TableArea } from "./style";
 import moment from "moment";
 import { set } from "immutable";
@@ -35,12 +32,18 @@ const FDCoupon = memo(() => {
   const [visiable, setVisiable] = useState(false);
   const [beginTime, setBeginTime] = useState(moment(new Date()));
   const [endTime, setEndTime] = useState(moment(new Date()));
+  const [pagination, setPagination] = useState({
+    current: 1,
+    total: 0,
+    pageSize: 10,
+  });
   const numberReg = /^[0-9]+(\.?[0-9]+)?$/;
   // 获取优惠券列表
   const fetchCouponList = () => {
     getCouponList().then((res) => {
       if (res.code === 20000) {
         setCouponList(res.data.list);
+        setPagination({ ...pagination, total: res.data.list.length });
       } else {
         message.error("获取优惠券信息失败！");
       }
@@ -85,12 +88,21 @@ const FDCoupon = memo(() => {
 
   // 删除消费券
   const handleRemove = (record) => {
-    deleteCoupon(record.id).then((res) => {
-      if (res.code === 20000) {
-        fetchCouponList();
-      } else {
-        message.error(res.data.message);
-      }
+    Modal.confirm({
+      title: "您正在执行删除操作",
+      icon: <ExclamationCircleOutlined />,
+      content: "您确定要删除该优惠券么？",
+      okText: "确认",
+      cancelText: "取消",
+      onOk: () => {
+        deleteCoupon(record.id).then((res) => {
+          if (res.code === 20000) {
+            fetchCouponList();
+          } else {
+            message.error(res.data.message);
+          }
+        });
+      },
     });
   };
 
@@ -179,16 +191,36 @@ const FDCoupon = memo(() => {
       key: "operation",
       render: (text, record) => (
         <Space size="middle">
-          <span className="operation" onClick={handleEdit.bind(null, record)}>
+          <Button type="primary" onClick={handleEdit.bind(null, record)}>
             修改
-          </span>
-          <span className="operation" onClick={handleRemove.bind(null, record)}>
+          </Button>
+          <Button type="danger" onClick={handleRemove.bind(null, record)}>
             删除
-          </span>
+          </Button>
         </Space>
       ),
     },
   ];
+
+  // 页面改变
+  const paginationChange = (current, pageSize) => {
+    setPagination({ ...pagination, current, pageSize });
+  };
+
+  const paginationObj = {
+    ...pagination,
+    showQuickJumper: true,
+    // 显示每页多少条数据
+    showSizeChanger: true,
+    hideOnSinglePage: false,
+    pageSizeOptions: ["10", "30", "50", "100"],
+    onChange: paginationChange,
+    onShowSizeChange: paginationChange,
+    // 总数
+    showTotal: function () {
+      return `总共有 ${pagination.total} 条数据`;
+    },
+  };
 
   // 表单校验
   const validateMessages = {
@@ -213,7 +245,7 @@ const FDCoupon = memo(() => {
           dataSource={couponList}
           columns={columns}
           bordered={true}
-          pagination={false}
+          pagination={paginationObj}
           rowKey={(record) => {
             return record.id;
           }}

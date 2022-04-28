@@ -1,15 +1,12 @@
 import styled from "styled-components";
 
-export const FDCouponWraper = styled.div`
-  /* background-color: pink; */
-
-  .couponUp {
+export const FDFoodWraper = styled.div`
+  .foodUp {
     padding: 5px;
     margin-bottom: 10px;
-    text-align: right;
-    /* border-bottom: 1px solid #fcfcfc; */
+    display: flex;
+    justify-content: space-between;
   }
-
 `;
 
 export const TableArea = styled.div`

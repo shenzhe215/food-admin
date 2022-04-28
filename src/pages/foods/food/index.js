@@ -11,7 +11,6 @@ import {
   Upload,
   message,
 } from "antd";
-import {} from "@ant-design/icons";
 import { addFoodInfo, updateFoodInfo } from "@/service/food";
 import {
   changeFoodInfoAction,
