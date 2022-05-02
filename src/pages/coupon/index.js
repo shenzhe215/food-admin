@@ -16,7 +16,6 @@ import {
 import { SearchOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import { FDCouponWraper, TableArea } from "./style";
 import moment from "moment";
-import { set } from "immutable";
 
 const FDCoupon = memo(() => {
   // state
@@ -194,9 +193,9 @@ const FDCoupon = memo(() => {
           <Button type="primary" onClick={handleEdit.bind(null, record)}>
             修改
           </Button>
-          <Button type="danger" onClick={handleRemove.bind(null, record)}>
+          {/* <Button type="danger" onClick={handleRemove.bind(null, record)}>
             删除
-          </Button>
+          </Button> */}
         </Space>
       ),
     },

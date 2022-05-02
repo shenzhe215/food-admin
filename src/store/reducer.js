@@ -1,9 +1,5 @@
 import { combineReducers } from "redux-immutable";
 
-import { reducer as foodReaucer } from "../pages/foods/store";
-
-const cReducer = combineReducers({
-  food: foodReaucer,
-});
+const cReducer = combineReducers({});
 
 export default cReducer;

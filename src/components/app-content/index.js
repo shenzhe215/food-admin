@@ -1,26 +1,13 @@
 import React, { memo, Suspense } from "react";
-
 import routes from "@/router";
-import {
-  Link,
-  Navigate,
-  Route,
-  useNavigate,
-  useRoutes,
-} from "react-router-dom";
-import { Layout, Menu, Breadcrumb } from "antd";
-import {
-  UserOutlined,
-  LaptopOutlined,
-  NotificationOutlined,
-} from "@ant-design/icons";
-import "./style.css";
+import { useNavigate, useRoutes } from "react-router-dom";
+import { Layout, Menu } from "antd";
 import {
   ContentWrapper,
   SiderMenuWrapper,
   ContentInsideWrapper,
 } from "./style";
-import MenuItem from "antd/lib/menu/MenuItem";
+import { menuItems } from "@/common/local-data";
 function RouteElement() {
   const element = useRoutes(routes);
   return element;
@@ -28,65 +15,63 @@ function RouteElement() {
 
 const FDAppContent = memo(() => {
   const navigate = useNavigate();
-  const { SubMenu } = Menu;
   const { Content, Sider } = Layout;
   return (
     <ContentWrapper>
       <SiderMenuWrapper className="site-layout-background">
         <Menu
+          items={menuItems}
           mode="inline"
-          defaultSelectedKeys={["1"]}
-          defaultOpenKeys={["sub1"]}
+          defaultSelectedKeys={["/home"]}
+          defaultOpenKeys={["/home"]}
           style={{ height: "100%", borderRight: 0 }}
           onClick={(item) => {
             const { key } = item;
-            console.log(item);
+            navigate(key);
+          }}
+        />
+        {/* <Menu
+          mode="inline"
+          defaultSelectedKeys={["/home"]}
+          defaultOpenKeys={["/home"]}
+          style={{ height: "100%", borderRight: 0 }}
+          onClick={(item) => {
+            const { key } = item;
             navigate(key);
           }}
         >
-          {/* <SubMenu key="sub1" icon={<UserOutlined />} title="菜品管理">
-            <Menu.Item key="3">
-              <Link to="/foodservice/list">查询菜品</Link>
-            </Menu.Item>
-            <Menu.Item key="4">
-              <Link to="/foodservice/food">新增菜品</Link>
-            </Menu.Item>
-          </SubMenu> */}
-          <MenuItem key="/food" icon={<UserOutlined />}>
-            菜品管理
+          <MenuItem key="/home" icon={<UserOutlined />}>
+            首页
           </MenuItem>
-          <MenuItem key="/food/list" icon={<UserOutlined />}>
-            菜品列表
-          </MenuItem>
-          <MenuItem key="/food/new" icon={<UserOutlined />}>
-            新菜品列表
-          </MenuItem>
-          <MenuItem key="/coupon" icon={<UserOutlined />}>
-            优惠券管理
-          </MenuItem>
+          <SubMenu key="food" icon={<UserOutlined />} title="菜品管理">
+            <MenuItem key="/food" icon={<UserOutlined />}>
+              菜品列表
+            </MenuItem>
+            <MenuItem key="/food/type" icon={<UserOutlined />}>
+              菜品分类
+            </MenuItem>
+          </SubMenu>
           <SubMenu key="coupon" icon={<UserOutlined />} title="优惠券管理">
-            {/* <Menu.Item key="5"> */}
-            <Link to="/coupon">优惠券查询</Link>
-            {/* </Menu.Item> */}
+            <MenuItem key="/coupon" icon={<UserOutlined />}>
+              优惠券列表
+            </MenuItem>
           </SubMenu>
-          {/* <SubMenu key="sub2" icon={<UserOutlined />} title="客户管理">
-            <Menu.Item key="1">
-              <Link to="/memberservice/list">查询客户</Link>
-            </Menu.Item>
-            <Menu.Item key="2">
-              <Link to="/memberservice/member">新增客户</Link>
-            </Menu.Item>
+          <SubMenu key="banner" icon={<UserOutlined />} title="轮播图管理">
+            <MenuItem key="/banner" icon={<UserOutlined />}>
+              轮播图管理
+            </MenuItem>
           </SubMenu>
-          
-          <SubMenu key="test" icon={<NotificationOutlined />} title="subnav 3">
-            <Menu.Item key="9">
-              <Link to="/test/table">test</Link>
-            </Menu.Item>
-            <Menu.Item key="10">option10</Menu.Item>
-            <Menu.Item key="11">option11</Menu.Item>
-            <Menu.Item key="12">option12</Menu.Item>
-          </SubMenu> */}
-        </Menu>
+          <SubMenu key="member" icon={<UserOutlined />} title="会员管理">
+            <MenuItem key="/member" icon={<UserOutlined />}>
+              会员列表
+            </MenuItem>
+          </SubMenu>
+          <SubMenu key="order" icon={<UserOutlined />} title="订单管理">
+            <MenuItem key="/order" icon={<UserOutlined />}>
+              订单列表
+            </MenuItem>
+          </SubMenu>
+        </Menu> */}
       </SiderMenuWrapper>
       <ContentInsideWrapper>
         <Layout style={{ padding: "0 24px 24px" }}>

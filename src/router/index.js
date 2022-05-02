@@ -1,39 +1,43 @@
 import React from "react";
 const Login = React.lazy((_) => import("../pages/login/login"));
-const FDFoodList = React.lazy((_) => import("@/pages/foods/list"));
-const FDFood = React.lazy((_) => import("@/pages/foods/food"));
-const FDFoodNew = React.lazy((_) => import("@/pages/foods"));
-const FDMemberList = React.lazy((_) => import("@/pages/members/list"));
-const FDMember = React.lazy((_) => import("@/pages/members/member"));
+const FDFoodType = React.lazy((_) => import("@/pages/foods/food-type"));
+const FDFood = React.lazy((_) => import("@/pages/foods"));
+const FDMember = React.lazy((_) => import("@/pages/members"));
 const FDCoupon = React.lazy((_) => import("@/pages/coupon"));
+const FDOrder = React.lazy((_) => import("@/pages/order"));
+const FDHome = React.lazy((_) => import("@/pages/home"));
+const FDBanner = React.lazy((_) => import("@/pages/banner"));
 const routes = [
   {
     path: "/login",
     element: <Login />,
   },
   {
+    path: "/home",
+    element: <FDHome />,
+  },
+  {
     path: "/food",
-    // element: <FDFood />,
     children: [
       { path: "", element: <FDFood /> },
-      { path: "list", element: <FDFoodList /> },
-      { path: "new", element: <FDFoodNew /> },
+      { path: "type", element: <FDFoodType /> },
     ],
   },
   {
     path: "/member",
-    children: [
-      { path: "list", element: <FDMemberList /> },
-      { path: "member", element: <FDMember /> },
-    ],
+    element: <FDMember />,
+  },
+  {
+    path: "/banner",
+    element: <FDBanner />,
   },
   {
     path: "/coupon",
     element: <FDCoupon />,
-    children: [
-      { path: "list", element: <FDCoupon /> },
-      // { path: "member", element: <FDMember /> },
-    ],
+  },
+  {
+    path: "/order",
+    element: <FDOrder />,
   },
   // {
   //   path: "/",

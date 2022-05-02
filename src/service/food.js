@@ -33,13 +33,6 @@ export function getFoodPageCondition(current, limit, foodQuery) {
   });
 }
 
-export function getFoodType() {
-  return request({
-    url: "/foodservice/type/getAllType",
-    method: "get",
-  });
-}
-
 // 添加菜品信息
 export function addFoodInfo(foodInfo) {
   return request({
@@ -92,5 +85,40 @@ export function getAllType() {
   return request({
     url: `/foodservice/type/getAllType`,
     method: "get",
+  });
+}
+
+// 获得菜品分类
+export function getTypeByTitle(type) {
+  return request({
+    url: `/foodservice/type/getTypeByTitle`,
+    method: "post",
+    data: type,
+  });
+}
+
+// 获得菜品分类
+export function removeType(id) {
+  return request({
+    url: `/foodservice/type/removeType/${id}`,
+    method: "delete",
+  });
+}
+
+// 获得菜品分类
+export function updateType(type) {
+  return request({
+    url: `/foodservice/type/updateType`,
+    method: "post",
+    data: type,
+  });
+}
+
+// 获得菜品分类
+export function addType(type) {
+  return request({
+    url: `/foodservice/type/addType`,
+    method: "post",
+    data: type,
   });
 }
