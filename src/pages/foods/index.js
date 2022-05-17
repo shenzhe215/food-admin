@@ -11,6 +11,8 @@ import {
   Select,
   InputNumber,
   Upload,
+  List,
+  Comment,
 } from "antd";
 import {
   SearchOutlined,
@@ -31,6 +33,7 @@ import {
   getFoodPageCondition,
   getFoodCondition,
 } from "@/service/food";
+import { getCommentListById } from "@/service/comment";
 import { FDFoodWraper, TableArea } from "./style";
 
 function beforeUpload(file) {
@@ -38,11 +41,12 @@ function beforeUpload(file) {
   if (!isJpgOrPng) {
     message.error("只能上传 JPG/PNG 格式文件!");
   }
-  const isLt2M = file.size / 1024 / 1024 < 2;
+  const isLt2M = file.size / 1024 / 1024 < 3;
   if (!isLt2M) {
     message.error("文件大小必须小于 2MB!");
   }
   return isJpgOrPng && isLt2M;
+  return isJpgOrPng;
 }
 
 const FDFood = memo(() => {
@@ -51,10 +55,12 @@ const FDFood = memo(() => {
   // other state
   const [foodList, setFoodList] = useState([]);
   const [typeList, setTypeList] = useState([]);
+  const [commentList, setCommentList] = useState([]);
   const [update, setUpdate] = useState(false);
   const [form] = Form.useForm();
   const [searchForm] = Form.useForm();
   const [visiable, setVisiable] = useState(false);
+  const [cmtVisiable, setCmtVisiable] = useState(false);
   const [loading, setLoading] = useState(false);
   const [cover, setCover] = useState("");
   const [id, setId] = useState("");
@@ -76,6 +82,17 @@ const FDFood = memo(() => {
         });
       } else {
         message.error("获取菜品信息失败！");
+      }
+    });
+  };
+
+  const fetchCommetnList = (id) => {
+    getCommentListById(id).then((res) => {
+      if (res.code === 20000) {
+
+        setCommentList(res.data.list);
+      } else {
+        message.error("获取评论信息失败！");
       }
     });
   };
@@ -129,9 +146,7 @@ const FDFood = memo(() => {
 
   // 搜索表单提交
   const onFinishSearch = (fieldsValue) => {
-    console.log(fieldsValue);
     getFoodCondition(fieldsValue).then((res) => {
-      console.log(res.data.list);
       if (res.code === 20000) {
         setFoodList(res.data.list);
         setPagination({
@@ -192,6 +207,13 @@ const FDFood = memo(() => {
     });
 
     setVisiable(true);
+  };
+
+  // 查看评论
+  const handleComment = (record) => {
+    const { id } = record;
+    fetchCommetnList(id);
+    setCmtVisiable(true);
   };
 
   // 新增菜品
@@ -282,6 +304,9 @@ const FDFood = memo(() => {
           <Button type="danger" onClick={handleRemove.bind(null, record)}>
             删除
           </Button>
+          <Button type="primary" onClick={handleComment.bind(null, record)}>
+            查看评论
+          </Button>
         </Space>
       ),
     },
@@ -325,13 +350,6 @@ const FDFood = memo(() => {
       <div style={{ marginTop: 8 }}>上传</div>
     </div>
   );
-
-  const normFile = (e) => {
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e && e.fileList;
-  };
 
   return (
     <FDFoodWraper>
@@ -439,11 +457,7 @@ const FDFood = memo(() => {
               <Radio value={"Draft"}>下架</Radio>
             </Radio.Group>
           </Form.Item>
-          <Form.Item
-            label="菜品图片"
-            name="cover"
-            rules={[{ required: true }]}
-          >
+          <Form.Item label="菜品图片" name="cover" rules={[{ required: true }]}>
             <Upload
               maxCount="1"
               listType="picture-card"
@@ -472,6 +486,42 @@ const FDFood = memo(() => {
             </div>
           </Form.Item>
         </Form>
+      </Modal>
+      <Modal
+        visible={cmtVisiable}
+        title={"菜品评论"}
+        okText={"确定"}
+        width={900}
+        cancelText={"取消"}
+        onCancel={() => {
+          setCmtVisiable(false);
+        }}
+        footer={[
+          <Button
+            onClick={() => {
+              setCmtVisiable(false);
+            }}
+          >
+            取消
+          </Button>,
+        ]}
+      >
+        <List
+          className="comment-list"
+          header={`${commentList.length} 条回复`}
+          itemLayout="horizontal"
+          dataSource={commentList}
+          renderItem={(item) => (
+            <li>
+              <Comment
+                author={item.nickname}
+                avatar={item.avatar}
+                content={item.content}
+                datetime={item.gmtCreate}
+              />
+            </li>
+          )}
+        />
       </Modal>
     </FDFoodWraper>
   );

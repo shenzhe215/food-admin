@@ -31,12 +31,15 @@ const FDCoupon = memo(() => {
   const [visiable, setVisiable] = useState(false);
   const [beginTime, setBeginTime] = useState(moment(new Date()));
   const [endTime, setEndTime] = useState(moment(new Date()));
+  const [type, setType] = useState(1);
   const [pagination, setPagination] = useState({
     current: 1,
     total: 0,
     pageSize: 10,
   });
   const numberReg = /^[0-9]+(\.?[0-9]+)?$/;
+  const discountReg = /^[0-9.9]/;
+
   // 获取优惠券列表
   const fetchCouponList = () => {
     getCouponList().then((res) => {
@@ -266,22 +269,40 @@ const FDCoupon = memo(() => {
           {...formItemLayout}
           validateMessages={validateMessages}
         >
-          <Form.Item
-            label="名称"
-            name={"title"}
-            rules={[
-              { required: true },
-              { pattern: numberReg, message: "输入数字" },
-            ]}
-          >
-            <Input placeholder="优惠多少" />
-          </Form.Item>
           <Form.Item label="类型" name={"type"}>
-            <Radio.Group>
+            <Radio.Group
+              onChange={(e) => {
+                setType(e.target.value);
+              }}
+            >
               <Radio value={1}>满减</Radio>
               <Radio value={2}>打折</Radio>
             </Radio.Group>
           </Form.Item>
+          {type === 2 ? (
+            <Form.Item
+              label="打几折"
+              name={"title"}
+              rules={[
+                { required: true },
+                { pattern: discountReg, message: "输入0-9.9数字" },
+              ]}
+            >
+              <Input placeholder="打几折" />
+            </Form.Item>
+          ) : (
+            <Form.Item
+              label="减多少"
+              name={"title"}
+              rules={[
+                { required: true },
+                { pattern: numberReg, message: "输入数字" },
+              ]}
+            >
+              <Input placeholder="满减多少元" />
+            </Form.Item>
+          )}
+
           <Form.Item
             label="条件"
             name="requirement"

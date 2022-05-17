@@ -30,48 +30,6 @@ const FDAppContent = memo(() => {
             navigate(key);
           }}
         />
-        {/* <Menu
-          mode="inline"
-          defaultSelectedKeys={["/home"]}
-          defaultOpenKeys={["/home"]}
-          style={{ height: "100%", borderRight: 0 }}
-          onClick={(item) => {
-            const { key } = item;
-            navigate(key);
-          }}
-        >
-          <MenuItem key="/home" icon={<UserOutlined />}>
-            首页
-          </MenuItem>
-          <SubMenu key="food" icon={<UserOutlined />} title="菜品管理">
-            <MenuItem key="/food" icon={<UserOutlined />}>
-              菜品列表
-            </MenuItem>
-            <MenuItem key="/food/type" icon={<UserOutlined />}>
-              菜品分类
-            </MenuItem>
-          </SubMenu>
-          <SubMenu key="coupon" icon={<UserOutlined />} title="优惠券管理">
-            <MenuItem key="/coupon" icon={<UserOutlined />}>
-              优惠券列表
-            </MenuItem>
-          </SubMenu>
-          <SubMenu key="banner" icon={<UserOutlined />} title="轮播图管理">
-            <MenuItem key="/banner" icon={<UserOutlined />}>
-              轮播图管理
-            </MenuItem>
-          </SubMenu>
-          <SubMenu key="member" icon={<UserOutlined />} title="会员管理">
-            <MenuItem key="/member" icon={<UserOutlined />}>
-              会员列表
-            </MenuItem>
-          </SubMenu>
-          <SubMenu key="order" icon={<UserOutlined />} title="订单管理">
-            <MenuItem key="/order" icon={<UserOutlined />}>
-              订单列表
-            </MenuItem>
-          </SubMenu>
-        </Menu> */}
       </SiderMenuWrapper>
       <ContentInsideWrapper>
         <Layout style={{ padding: "0 24px 24px" }}>

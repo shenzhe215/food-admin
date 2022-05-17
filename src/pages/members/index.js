@@ -28,7 +28,11 @@ const FDMember = memo(() => {
     getMemberList().then((res) => {
       if (res.code === 20000) {
         setMemberList(res.data.list);
-        setPagination({ ...pagination, total: res.data.list.length });
+        setPagination({
+          ...pagination,
+          current: 1,
+          total: res.data.list.length,
+        });
       } else {
         message.error("获取会员信息失败！");
       }
@@ -47,6 +51,11 @@ const FDMember = memo(() => {
     getMemberConditionList(fieldsValue).then((res) => {
       if (res.code === 20000) {
         setMemberList(res.data.list);
+        setPagination({
+          ...pagination,
+          current: 1,
+          total: res.data.list.length,
+        });
       } else {
         message.error("查询会员列表失败");
       }

@@ -9,5 +9,7 @@ export const FDHomeWraper = styled.div`
     flex-wrap: wrap;
   }
 
+
+
 `;
 

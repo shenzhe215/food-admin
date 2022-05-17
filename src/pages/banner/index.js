@@ -342,23 +342,8 @@ const FDBanner = memo(() => {
           <Form.Item label="名称" name={"title"} rules={[{ required: true }]}>
             <Input />
           </Form.Item>
-          {/* <Form.Item
-            name="imageUrl"
-            label="imageUrl"
-            valuePropName="fileList"
-            getValueFromEvent={normFile}
-            extra="longgggggggggggggggggggggggggggggggggg"
-          >
-            <Upload
-              name="logo"
-              action="http://127.0.0.1:9001/foodoss/fileoss"
-              listType="picture"
-            >
-              <Button icon={<UploadOutlined />}>Click to upload</Button>
-            </Upload>
-          </Form.Item> */}
           <Form.Item
-            label="轮播图图片"
+            label="轮播图"
             rules={[{ required: true }]}
             name="imageUrl"
             // valuePropName="fileList"
