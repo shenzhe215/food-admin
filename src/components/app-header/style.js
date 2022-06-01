@@ -29,4 +29,11 @@ export const RightWraper = styled.div`
   .login {
     cursor: pointer;
   }
+
+  .admin-info {
+    .welcome {
+      margin-left: 8px;
+      font-size: 15px;
+    }
+  }
 `;

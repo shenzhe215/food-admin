@@ -261,6 +261,15 @@ const FDCoupon = memo(() => {
         onCancel={() => {
           setVisiable(false);
         }}
+        footer={[
+          <Button
+            onClick={() => {
+              setVisiable(false);
+            }}
+          >
+            取消
+          </Button>,
+        ]}
       >
         <Form
           layout="horizontal"
@@ -363,7 +372,7 @@ const FDCoupon = memo(() => {
           <Form.Item {...formTailLayout}>
             <div className="operationBox">
               <Button block type="primary" size="middle" htmlType="submit">
-                {(update && "更新") || "保存"}
+                {(update && "更新") || "添加"}
               </Button>
             </div>
           </Form.Item>

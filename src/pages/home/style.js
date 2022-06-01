@@ -9,7 +9,9 @@ export const FDHomeWraper = styled.div`
     flex-wrap: wrap;
   }
 
-
-
+  .table-area {
+    .ant-table-thead .ant-table-cell {
+      /* background-color: #ebecf0; */
+    }
+  }
 `;
-

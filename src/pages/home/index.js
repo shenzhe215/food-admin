@@ -176,7 +176,7 @@ const FDHome = memo(() => {
   };
   return (
     <FDHomeWraper>
-      <div>
+      <div className="table-area">
         <Table
           dataSource={orderList}
           columns={columns}
